@@ -1,9 +1,13 @@
+// services/apiServices.js
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+// export const baseURL = "http://172.20.10.6:5000/api";
+export const baseURL = "http://192.168.1.50:5000/api";
+
 const apiClient = axios.create({
-  baseURL: "http://172.20.10.6:5000/api",
-  timeout: 5000,
+  baseURL: baseURL,
+  timeout: 10000,
   headers: { "Content-Type": "application/json" },
 });
 
@@ -31,4 +35,71 @@ export const postData = async (endpoint, data) => {
   }
 };
 
-// Ajoutez d'autres méthodes si nécessaire
+export const getAvailableTrades = async () => {
+  try {
+    const response = await apiClient.get("/trades/available");
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des données", error);
+    throw error;
+  }
+};
+
+export const getUserPlants = async (userId) => {
+  try {
+    const response = await apiClient.get(`/plants/getUserPlant/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération des plantes de l'utilisateur",
+      error
+    );
+    throw error;
+  }
+};
+
+export const deleteUserPlant = async (plantId) => {
+  try {
+    const response = await apiClient.delete(
+      `/plants/deleteUserPlant/${plantId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de la suppression de la plante", error);
+    throw error;
+  }
+};
+
+export const addPlantSuggestion = async (formData) => {
+  try {
+    const response = await apiClient.post("/plants/plantSuggestion", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de l'ajout de la plante suggérée", error);
+    throw error;
+  }
+};
+
+export const fetchPlantNames = async () => {
+  try {
+    const response = await apiClient.get("/plants/plantsName");
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des noms de plantes", error);
+    throw error;
+  }
+};
+
+export const updatePlantState = async (plantId, stateExchange) => {
+  try {
+    const response = await apiClient.put(`/plants/${plantId}/state`, {
+      state_exchange: stateExchange,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating plant state", error);
+    throw error;
+  }
+};
