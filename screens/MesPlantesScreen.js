@@ -13,7 +13,7 @@
 // import {
 //   getUserPlants,
 //   deleteUserPlant,
-//   updatePlantState, // Importer la fonction updatePlantState
+//   updatePlantState,
 //   baseURL,
 // } from "../services/apiServices";
 
@@ -194,17 +194,20 @@
 //     fontSize: 18,
 //     fontWeight: "bold",
 //     marginBottom: 4,
+//     textAlign: "center",
+//     color: "#00796B",
 //   },
 //   state: {
 //     fontSize: 16,
-//     color: "#00796B",
 //     marginBottom: 8,
+//     textAlign: "center",
+//     color: "#00796B",
 //   },
 //   updateButton: {
-//     backgroundColor: "#00796B",
+//     backgroundColor: "#FFA726",
 //     padding: 10,
 //     borderRadius: 5,
-//     marginBottom: 8,
+//     marginTop: 10,
 //   },
 //   updateButtonText: {
 //     color: "#fff",
@@ -236,6 +239,7 @@
 
 // export default MesPlantesScreen;
 
+// screens/MesPlantesScreen.js
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -345,6 +349,10 @@ const MesPlantesScreen = ({ navigation }) => {
     });
   };
 
+  const handleAddInteraction = () => {
+    navigation.navigate("AddInteraction");
+  };
+
   const renderItem = ({ item }) => {
     const imageUrl = `${baseURL.replace("/api", "")}/${item.photo}`;
     return (
@@ -385,6 +393,9 @@ const MesPlantesScreen = ({ navigation }) => {
       />
       <TouchableOpacity style={styles.addButton} onPress={handleAddPlant}>
         <Text style={styles.addButtonText}>Ajouter une plante</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.addButton} onPress={handleAddInteraction}>
+        <Text style={styles.addButtonText}>Ajouter une interaction</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );

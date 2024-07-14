@@ -8,14 +8,14 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import { getAvailableTrades, baseURL } from "../services/apiServices";
+import { getAvailablePlants, baseURL } from "../services/apiServices";
 
 const PlantesEnTrocScreen = () => {
   const [plants, setPlants] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    getAvailableTrades()
+    getAvailablePlants()
       .then((data) => {
         setPlants(data);
       })
@@ -45,7 +45,9 @@ const PlantesEnTrocScreen = () => {
         data={plants}
         renderItem={renderItem}
         keyExtractor={(item, index) =>
-          item.id ? item.id.toString() : index.toString()
+          item.id_plante_suggested
+            ? item.id_plante_suggested.toString()
+            : index.toString()
         }
         contentContainerStyle={styles.list}
       />

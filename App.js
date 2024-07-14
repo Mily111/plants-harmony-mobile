@@ -1,10 +1,11 @@
+// App.js
 import "react-native-gesture-handler";
 import React, { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from "react-native-vector-icons/Ionicons";
-import * as Permissions from "expo-permissions"; // Importer Permissions
+import { Camera } from "expo-camera"; // Import Camera for permissions
 
 import HomeScreen from "./screens/HomeScreen";
 import MesPlantesScreen from "./screens/MesPlantesScreen";
@@ -13,6 +14,9 @@ import QuelleEstCettePlanteScreen from "./screens/QuelleEstCettePlanteScreen";
 import LoginScreen from "./screens/LoginScreen";
 import LogoutScreen from "./screens/LogoutScreen";
 import AddPlantScreen from "./screens/AddPlantScreen";
+import AddInteractionScreen from "./screens/AddInteractionScreen";
+import PlantCareSummaryScreen from "./screens/PlantCareSummaryScreen";
+import UserPlantsWithInteractionsScreen from "./screens/UserPlantsWithInteractionsScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -65,6 +69,11 @@ function TabNavigator() {
         options={{ tabBarLabel: "Plantes en Troc" }}
       />
       <Tab.Screen
+        name="PlantCareSummary"
+        component={PlantCareSummaryScreen}
+        options={{ tabBarLabel: "Récap Soins" }}
+      />
+      <Tab.Screen
         name="QuelleEstCettePlante"
         component={QuelleEstCettePlanteScreen}
         options={{ tabBarLabel: "Quelle est cette Plante?" }}
@@ -81,12 +90,10 @@ function TabNavigator() {
 function App() {
   useEffect(() => {
     const getPermissions = async () => {
-      const { status: cameraStatus } = await Permissions.askAsync(
-        Permissions.CAMERA
-      );
-      const { status: mediaLibraryStatus } = await Permissions.askAsync(
-        Permissions.MEDIA_LIBRARY
-      );
+      const { status: cameraStatus } =
+        await Camera.requestCameraPermissionsAsync();
+      const { status: mediaLibraryStatus } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (cameraStatus !== "granted" || mediaLibraryStatus !== "granted") {
         alert(
           "Nous avons besoin des permissions pour accéder à la caméra et à la bibliothèque de médias"
@@ -106,7 +113,16 @@ function App() {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Main" component={TabNavigator} />
         <Stack.Screen name="AddPlant" component={AddPlantScreen} />
+        <Stack.Screen name="AddInteraction" component={AddInteractionScreen} />
       </Stack.Navigator>
+      <Stack.Screen
+        name="PlantCareSummary"
+        component={PlantCareSummaryScreen}
+      />
+      <Stack.Screen
+        name="UserPlantsWithInteractions"
+        component={UserPlantsWithInteractionsScreen}
+      />
     </NavigationContainer>
   );
 }

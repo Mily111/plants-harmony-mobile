@@ -10,12 +10,12 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Picker } from "@react-native-picker/picker";
 import {
   addPlantSuggestion,
   fetchPlantNames,
   getUserPlants,
 } from "../services/apiServices";
-import { Picker } from "@react-native-picker/picker";
 
 const AddPlantScreen = ({ navigation }) => {
   const [plantName, setPlantName] = useState("");
@@ -24,8 +24,8 @@ const AddPlantScreen = ({ navigation }) => {
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [userId, setUserId] = useState(null);
-  const [plants, setPlants] = useState([]); // Ajouté pour stocker les plantes
-  const [error, setError] = useState(null); // Ajouté pour gérer les erreurs
+  const [plants, setPlants] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     async function fetchUserId() {
@@ -146,8 +146,8 @@ const AddPlantScreen = ({ navigation }) => {
       const res = await addPlantSuggestion(formData);
       if (res.message === "Plant suggestion added or updated") {
         Alert.alert("Succès", "Plante suggérée ajoutée");
-        fetchUserPlants(); // Refresh the user's plants after adding a new one
-        navigation.goBack(); // Retourne à l'écran précédent après l'ajout
+        fetchUserPlants();
+        navigation.goBack();
       } else {
         Alert.alert("Erreur", "Erreur lors de l'ajout de la plante suggérée");
       }
@@ -164,7 +164,7 @@ const AddPlantScreen = ({ navigation }) => {
         selectedValue={plantName}
         onValueChange={(itemValue) => setPlantName(itemValue)}
         style={styles.input}
-        itemStyle={styles.pickerItem} // Ajouté pour style des items
+        itemStyle={styles.pickerItem}
       >
         <Picker.Item
           label="Choisir un nom de plante"
@@ -172,7 +172,11 @@ const AddPlantScreen = ({ navigation }) => {
           style={styles.pickerPlaceholder}
         />
         {plantNames.map((plant) => (
-          <Picker.Item key={plant.id} label={plant.name} value={plant.name} />
+          <Picker.Item
+            key={plant.id_plant}
+            label={plant.name_plant}
+            value={plant.name_plant}
+          />
         ))}
       </Picker>
       <View style={styles.stateExchangeContainer}>
@@ -181,7 +185,7 @@ const AddPlantScreen = ({ navigation }) => {
           selectedValue={stateExchange}
           onValueChange={(itemValue) => setStateExchange(itemValue)}
           style={styles.statePicker}
-          itemStyle={styles.pickerItem} // Ajouté pour style des items
+          itemStyle={styles.pickerItem}
         >
           <Picker.Item label="Disponible" value="disponible" />
           <Picker.Item label="Indisponible" value="indisponible" />
