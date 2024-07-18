@@ -22,6 +22,7 @@
 //       if (result.status === "ok") {
 //         // Utilisez "status" au lieu de "Status"
 //         await AsyncStorage.setItem("userToken", result.token);
+//         await AsyncStorage.setItem("userId", result.userId.toString()); // Stocke l'ID de l'utilisateur
 //         navigation.navigate("Main"); // Navigue vers le Tab Navigator
 //       } else {
 //         setError(
@@ -81,7 +82,7 @@
 import React, { useState } from "react";
 import { View, TextInput, Button, StyleSheet, Text } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { postData } from "../services/apiServices";
+import { postData, getCsrfToken } from "../services/apiServices"; // Importer getCsrfToken
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
@@ -94,13 +95,16 @@ const LoginScreen = ({ navigation }) => {
       password_user: password,
     });
     try {
-      const result = await postData("/users/login", {
+      // Obtenir le jeton CSRF avant de tenter la connexion
+      await getCsrfToken();
+
+      const result = await postData("/sessionsClientLourd/loginClientLourd", {
         username,
         password_user: password,
       });
+
       console.log("Réponse de l'API :", result);
       if (result.status === "ok") {
-        // Utilisez "status" au lieu de "Status"
         await AsyncStorage.setItem("userToken", result.token);
         await AsyncStorage.setItem("userId", result.userId.toString()); // Stocke l'ID de l'utilisateur
         navigation.navigate("Main"); // Navigue vers le Tab Navigator

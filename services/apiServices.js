@@ -12,12 +12,31 @@ const apiClient = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
-// intercepteur pour inclure le jeton dans les en-têtes des requêtes
+// Fonction pour obtenir le jeton CSRF
+export const getCsrfToken = async () => {
+  try {
+    const response = await apiClient.get("/csrf-token", {
+      withCredentials: true,
+    });
+    const csrfToken = response.data.csrfToken;
+    await AsyncStorage.setItem("csrfToken", csrfToken);
+    return csrfToken;
+  } catch (error) {
+    console.error("Erreur lors de l'obtention du jeton CSRF", error);
+    throw error;
+  }
+};
+// Intercepteur pour inclure le jeton dans les en-têtes des requêtes
+
 apiClient.interceptors.request.use(
   async (config) => {
     const token = await AsyncStorage.getItem("userToken");
+    const csrfToken = await AsyncStorage.getItem("csrfToken");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+    if (csrfToken) {
+      config.headers["X-CSRF-Token"] = csrfToken;
     }
     return config;
   },
